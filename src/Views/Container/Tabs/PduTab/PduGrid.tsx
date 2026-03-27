@@ -8,7 +8,7 @@ import _min from 'lodash/minBy'
 import _noop from 'lodash/noop'
 import _split from 'lodash/split'
 import _values from 'lodash/values'
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { type ReactNode, useEffect, useState, useRef, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import Selecto from 'react-selecto'
 
@@ -49,6 +49,7 @@ interface PduGridProps {
   mobileSelectionEnabled?: boolean
   detailsLoading?: boolean
   onRangesChange?: (ranges: Record<string, { min?: number; max?: number }>) => void
+  additionalToolbarControls?: ReactNode
 }
 
 const PduGrid = ({
@@ -67,6 +68,7 @@ const PduGrid = ({
   mobileSelectionEnabled,
   detailsLoading,
   onRangesChange,
+  additionalToolbarControls,
 }: PduGridProps) => {
   const selectablesContainerRef = useRef<HTMLElement | null>(null)
   const [showSelecto, setShowSelecto] = useState<boolean>(false)
@@ -378,6 +380,7 @@ const PduGrid = ({
             }
             ranges={ranges}
             detailsLoading={detailsLoading}
+            additionalToolbarControls={additionalToolbarControls}
           />
         ))}
       </SectionsList>
