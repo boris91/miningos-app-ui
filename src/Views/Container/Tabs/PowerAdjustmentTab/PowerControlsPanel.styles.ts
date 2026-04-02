@@ -1,11 +1,10 @@
 import Button from 'antd/es/button'
 import InputNumber from 'antd/es/input-number'
+import Slider from 'antd/es/slider'
 import styled from 'styled-components'
 
 import { flexColumn, flexRow } from '@/app/mixins'
 import { COLOR } from '@/constants/colors'
-
-const BUTTON_BORDER_RADIUS = '6px'
 
 export const PanelContainer = styled.div`
   ${flexColumn};
@@ -50,15 +49,13 @@ export const SectionLabel = styled.span`
 `
 
 export const ManualInputRow = styled.div`
-  ${flexRow};
-  align-items: center;
-  gap: 12px;
+  ${flexColumn};
+  gap: 8px;
 `
 
 export const InputLabel = styled.span`
   font-size: 14px;
   color: ${COLOR.WHITE};
-  min-width: 90px;
 `
 
 export const StyledInputNumber = styled(InputNumber)`
@@ -76,33 +73,62 @@ export const StyledInputNumber = styled(InputNumber)`
   }
 `
 
-export const PercentageButtonsRow = styled.div`
-  ${flexRow};
-  gap: 0;
+export const StyledSlider = styled(Slider)`
   width: 100%;
-`
+  margin: 0 0 16px;
 
-export const PercentageButton = styled(Button)<{ $isActive?: boolean }>`
-  flex: 1;
-  border-radius: 0;
-  background: ${({ $isActive }) => ($isActive ? COLOR.COLD_ORANGE : COLOR.BLACK)};
-  border-color: ${COLOR.WHITE_ALPHA_01};
-  color: ${({ $isActive }) => ($isActive ? COLOR.BLACK : COLOR.WHITE)};
-
-  &:first-child {
-    border-top-left-radius: ${BUTTON_BORDER_RADIUS};
-    border-bottom-left-radius: ${BUTTON_BORDER_RADIUS};
+  .ant-slider-rail {
+    background: ${COLOR.WHITE_ALPHA_01};
+    height: 6px;
   }
 
-  &:last-child {
-    border-top-right-radius: ${BUTTON_BORDER_RADIUS};
-    border-bottom-right-radius: ${BUTTON_BORDER_RADIUS};
+  .ant-slider-track {
+    background: ${COLOR.COLD_ORANGE};
+    height: 6px;
   }
 
-  &:hover {
-    background: ${({ $isActive }) => ($isActive ? COLOR.COLD_ORANGE : COLOR.WHITE_ALPHA_01)};
-    border-color: ${COLOR.COLD_ORANGE};
-    color: ${({ $isActive }) => ($isActive ? COLOR.BLACK : COLOR.WHITE)};
+  .ant-slider-handle {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .ant-slider-handle {
+    opacity: 1;
+  }
+
+  .ant-slider-handle::after {
+    box-shadow: 0 0 0 2px ${COLOR.COLD_ORANGE};
+    background: ${COLOR.COLD_ORANGE};
+  }
+
+  .ant-slider-handle:hover::after,
+  .ant-slider-handle:focus::after {
+    box-shadow: 0 0 0 4px ${COLOR.COLD_ORANGE};
+  }
+
+  .ant-slider-mark {
+    top: 18px;
+  }
+
+  .ant-slider-mark-text {
+    color: ${COLOR.WHITE_ALPHA_07};
+    font-size: 11px;
+  }
+
+  .ant-slider-mark-text-active {
+    color: ${COLOR.WHITE};
+  }
+
+  .ant-slider-mark-text:first-child {
+    transform: translateX(0%) !important;
+  }
+
+  .ant-slider-mark-text:last-child {
+    transform: translateX(-100%) !important;
+  }
+
+  .ant-slider-dot {
+    display: none;
   }
 `
 
@@ -184,6 +210,6 @@ export const ErrorMessageWrapper = styled.div`
   color: ${COLOR.RED};
   font-size: 12px;
   line-height: 12px;
-  min-height: 15px;
+  min-height: 0;
   padding-top: 3px;
 `

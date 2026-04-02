@@ -22,8 +22,6 @@ import {
   ModelTitle,
   PanelContainer,
   PanelHeader,
-  PercentageButton,
-  PercentageButtonsRow,
   RackGroup,
   RackGroupTitle,
   RacksLabel,
@@ -32,9 +30,11 @@ import {
   SocketBadge,
   SocketBadgesRow,
   StyledInputNumber,
+  StyledSlider,
   SummaryTitle,
 } from './PowerControlsPanel.styles'
 
+import { getConnectedMinerForSocket } from '@/app/utils/containerUtils'
 import { NoMinersSelectedContainer } from '@/Components/Explorer/DetailsView/DetailsView.styles'
 import NoDataSelected from '@/Components/Explorer/DetailsView/NoDataSelected/NoDataSelected'
 import { UNITS } from '@/constants/units'
@@ -59,7 +59,14 @@ interface PowerControlsPanelProps {
 
 const MIN_POWER_PERCENTAGE = 0
 const MAX_POWER_PERCENTAGE = 200
-const PERCENTAGE_PRESETS = [0, 25, 50, 75, 100]
+const SLIDER_MARKS: Record<number, string> = {
+  0: '0%',
+  40: '40%',
+  80: '80%',
+  120: '120%',
+  160: '160%',
+  200: '200%',
+}
 
 const powerPercentageSchema = yup.object({
   powerPercentage: yup
@@ -109,12 +116,32 @@ const PowerControlsPanel: FC<PowerControlsPanelProps> = ({
     },
   })
 
-  // Reset percentage when selection is cleared
+  // Pre-fill percentage from selected miners or reset when cleared
   useEffect(() => {
     if (!hasSelection) {
       formik.resetForm()
+      return
     }
-  }, [hasSelection])
+
+    const powerPctValues = _compact(
+      _map(selectedSockets, (socket) => {
+        const miner = getConnectedMinerForSocket(
+          (connectedMiners || []) as Device[],
+          socket.pduIndex,
+          socket.socketIndex,
+        ) as
+          | { last?: { snap?: { stats?: { miner_specific?: { power_pct?: number } } } } }
+          | undefined
+        return miner?.last?.snap?.stats?.miner_specific?.power_pct
+      }),
+    )
+
+    if (powerPctValues.length > 0 && _uniq(powerPctValues).length === 1) {
+      formik.setFieldValue('powerPercentage', powerPctValues[0])
+    } else {
+      formik.setFieldValue('powerPercentage', null)
+    }
+  }, [selectedItems])
 
   // Get unique racks from selection
   const getSelectedRacks = (): string[] => {
@@ -140,8 +167,8 @@ const PowerControlsPanel: FC<PowerControlsPanelProps> = ({
     formik.setFieldTouched('powerPercentage', true, false)
   }
 
-  const handlePresetClick = (preset: number) => {
-    formik.setFieldValue('powerPercentage', preset)
+  const handleSliderChange = (value: number) => {
+    formik.setFieldValue('powerPercentage', value)
     formik.setFieldTouched('powerPercentage', true, false)
   }
 
@@ -188,22 +215,20 @@ const PowerControlsPanel: FC<PowerControlsPanelProps> = ({
               }
             />
           </ManualInputRow>
-          <ErrorMessageWrapper>
-            <ErrorMessage name="powerPercentage" />
-          </ErrorMessageWrapper>
+          {formik.touched.powerPercentage && formik.errors.powerPercentage && (
+            <ErrorMessageWrapper>
+              <ErrorMessage name="powerPercentage" />
+            </ErrorMessageWrapper>
+          )}
 
-          <PercentageButtonsRow>
-            {_map(PERCENTAGE_PRESETS, (preset) => (
-              <PercentageButton
-                key={preset}
-                $isActive={formik.values.powerPercentage === preset}
-                onClick={() => handlePresetClick(preset)}
-              >
-                {preset}
-                {UNITS.PERCENT}
-              </PercentageButton>
-            ))}
-          </PercentageButtonsRow>
+          <StyledSlider
+            min={MIN_POWER_PERCENTAGE}
+            max={MAX_POWER_PERCENTAGE}
+            marks={SLIDER_MARKS}
+            value={formik.values.powerPercentage ?? 0}
+            onChange={handleSliderChange}
+            tooltip={{ formatter: (value) => `${value}${UNITS.PERCENT}` }}
+          />
 
           <ApplyButton onClick={() => formik.handleSubmit()} disabled={isApplyDisabled}>
             Apply
