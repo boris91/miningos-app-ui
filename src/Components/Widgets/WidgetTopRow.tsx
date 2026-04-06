@@ -5,7 +5,14 @@ import { FC } from 'react'
 
 import { AlarmInfo } from './AlarmInfo'
 import { WIDGET_ALARMS, type AlarmPropKey, type WidgetAlarmItem } from './WidgetTopRow.const'
-import { MainContainer, Power, PowerProps, Title, TitleProps, TopRowInnerContainer } from './WidgetTopRow.styles'
+import {
+  MainContainer,
+  Power,
+  PowerProps,
+  Title,
+  TitleProps,
+  TopRowInnerContainer,
+} from './WidgetTopRow.styles'
 
 import { unitToKilo } from '@/app/utils/deviceUtils'
 import { formatErrors, formatNumber } from '@/app/utils/format'
@@ -59,7 +66,11 @@ const WidgetTopRow: FC<WidgetTopRowProps> = ({
             key={alarm.title}
           />
         ))}
-        <Power $color={powerColor} $fontSize={powerFontSize} $valueFontWeight={powerValueFontWeight}>
+        <Power
+          $color={powerColor}
+          $fontSize={powerFontSize}
+          $valueFontWeight={powerValueFontWeight}
+        >
           {statsErrorMessage ? (
             <Tooltip title={formatErrors(statsErrorMessage, getFormattedDate)}>-</Tooltip>
           ) : (
