@@ -153,10 +153,6 @@ export const PresetDateRangePickerPanel = styled.div<StyledProps>`
       }
     }
 
-    .ant-picker-footer {
-      display: none !important;
-    }
-
     .ant-picker-panels {
       flex-wrap: wrap !important;
       justify-content: center !important;
