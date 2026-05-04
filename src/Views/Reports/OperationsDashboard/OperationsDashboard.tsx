@@ -42,6 +42,7 @@ const OperationsDashboard = () => {
     end: defaultDateRange.end,
     isResetable: true,
     defaultRange: defaultDateRange,
+    isTimeShown: true,
   })
 
   // Reset to default 7 days range
