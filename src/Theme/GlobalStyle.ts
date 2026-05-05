@@ -56,8 +56,8 @@ export const GlobalStyle = createGlobalStyle`
     pointer-events: none;
   }
 
-  .ant-picker-date-panel-container > .ant-modal-root,
-  .ant-picker-date-panel-container > .ant-modal-root > .ant-modal-wrap {
+  .ant-picker-panel-container > .ant-modal-root,
+  .ant-picker-panel-container > .ant-modal-root > .ant-modal-wrap {
     overflow: hidden !important;
     background: none !important;
     background-color: none !important;
